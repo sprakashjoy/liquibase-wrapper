@@ -1,28 +1,23 @@
-#
+#!/bin/sh
 # liquibase_wrapper.sh
 #
 #
 
-export usage="./liquibase_wrapper.sh -a <app_name> -c <context> -s <schema> -t <tag>"
+export usage="./liquibase_wrapper.sh -a <app_name> -c <context> -s <schema> -t <tag> "
 
 while [ "$1" != "" ]; do
-	echo "$1"
     	case $1 in
         	-a | --app ) 	shift
 				export app=$1
-				echo $app
                                 ;;
         	-c | --context )   	shift
 				export context=$1
-				echo "$context"
                                 ;;
         	-s | --schema ) shift
 				export schema=$1
-				echo "$schema"
                                 ;;
 		-t | --tag ) 	shift
 				export tag=$1
-				echo "$tag"
 				;;
 
     	esac
@@ -35,11 +30,12 @@ if [ -z $app ] || [ -z $context ] || [ -z $schema ] ; then
 	exit 1
 fi
 
-
-echo "app:$app"
-echo "context:$context"
-echo "schema:$schema"
-echo "tag:$tag"
+echo "Parameters"
+echo "---------"
+echo "Application	: 	$app"
+echo "Context		:	$context"
+echo "Schema		:	$schema"
+echo "Tag		:	$tag"
 
 
 export jar=$LIQUI_HOME/liquibase.jar
@@ -57,18 +53,18 @@ if [ ! -f $change_log_file ] ; then
 	exit 1
 fi
 
-echo "running update"	
+echo "Executing Liquibase update"	
 java -jar $jar --defaultsFile=$conf  \
 	--changeLogFile=$change_log_file \
 	update	
 if [ ! -z $tag ] ; then
-	echo "tagging for rollback $tag"
+	echo "Tagging database with $tag"
 	java -jar $jar --defaultsFile=$conf  \
 	--changeLogFile=$change_log_file \
 		tag $tag
 fi
 
-echo "running report"
+echo "Running report"
 java -jar $jar --defaultsFile=$conf  \
 	--changeLogFile=$change_log_file \
 	dbDoc $data_doc	
