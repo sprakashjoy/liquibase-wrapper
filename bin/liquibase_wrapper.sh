@@ -3,7 +3,7 @@
 #
 #
 
-export usage="./liquibase_wrapper.sh -a <app_name> -c <context> -s <schema> -t <tag> "
+export usage="./liquibase_wrapper.sh -a <app_name> -c <context> -s <module> -t <tag> "
 
 while [ "$1" != "" ]; do
     	case $1 in
@@ -13,8 +13,8 @@ while [ "$1" != "" ]; do
         	-c | --context )   	shift
 				export context=$1
                                 ;;
-        	-s | --schema ) shift
-				export schema=$1
+        	-m | --module ) shift
+				export module=$1
                                 ;;
 		-t | --tag ) 	shift
 				export tag=$1
@@ -25,7 +25,7 @@ while [ "$1" != "" ]; do
 
 done
 
-if [ -z $app ] || [ -z $context ] || [ -z $schema ] ; then
+if [ -z $app ] || [ -z $context ] || [ -z $module ] ; then
 	echo "$usage"
 	exit 1
 fi
@@ -34,13 +34,13 @@ echo "Parameters"
 echo "---------"
 echo "Application	: 	$app"
 echo "Context		:	$context"
-echo "Schema		:	$schema"
+echo "Schema		:	$module"
 echo "Tag		:	$tag"
 
 
 export jar=$LIQUI_HOME/liquibase.jar
-export conf=$LIQUI_WRAP_HOME/conf/${app}/${context}/${schema}/liquibase.properties
-export change_log_file=$LIQUI_WRAP_HOME/changesets/${app}/${schema}/master-${schema}.xml
+export conf=$LIQUI_WRAP_HOME/conf/${app}/${context}/${module}/liquibase.properties
+export change_log_file=$LIQUI_WRAP_HOME/changesets/${app}/${module}/master.xml
 export data_doc=$LIQUI_WRAP_HOME/data/
 
 if [ ! -f $conf ] ; then
